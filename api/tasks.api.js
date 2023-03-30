@@ -3,7 +3,6 @@ const router = express.Router();
 const Task = require('../models/tasks');
 const db = require('../config/db')
 
-
 router.post('/', async (req, res) => {
   const task = new Task({
     title: req.body.title,
@@ -20,8 +19,13 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.get('/', (req, res) => {
-  res.send('Get all tasks');
+router.get('/', async (req, res) => {
+  try {
+    const tasks = await Task.find();
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 module.exports = router;
