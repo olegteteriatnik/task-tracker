@@ -6,7 +6,11 @@ const taskSchema = new mongoose.Schema({
     required: true
   },
   description: String,
-  dueDate: Date,
+  status: {
+    type: String,
+    enum: ['backlog', 'to do', 'in progress', 'ready for testing', 'in testing', 'done'],
+    default: 'backlog'
+  },
   priority: {
     type: String,
     enum: ['low', 'medium', 'high'],
@@ -20,8 +24,12 @@ const taskSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-});
+},
+{
+  versionKey: false
+}
+);
 
-const Tasks = mongoose.model('Task', taskSchema);
+const Task = mongoose.model('Task', taskSchema);
 
-module.exports = Tasks;
+module.exports = Task;

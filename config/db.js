@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config();
 
-const MONGODB_URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.bp6sv0i.mongodb.net/simpleDB`;
+const MONGODB_URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.bp6sv0i.mongodb.net/simpleDB?retryWrites=true&w=majority`;
 
-mongoose.connect(MONGODB_URI, {
+const db = mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
@@ -12,4 +12,4 @@ mongoose.connect(MONGODB_URI, {
   console.log('Error connecting to database:', err.message);
 });
 
-module.exports = mongoose.connection;
+module.exports = db;
