@@ -8,7 +8,6 @@ router.post('/', async (req, res) => {
   if (!req.body.description) {
     return res.status(400).json({ message: 'description field is required' });
   }
-
   const task = new Task({
     title: req.body.title,
     description: req.body.description,
@@ -42,6 +41,43 @@ router.get('/:_id', async (req, res) => {
     res.json(task);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+router.patch('/:_id', async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = [
+    'title', 'description', 'status', 'priority', 'completed'
+  ]
+  const isValidOperation = updates.every(update => allowedUpdates.includes(update));
+
+  if (!isValidOperation) {
+    return res.status(400).json({ message: 'Invalid updates' });
+  }
+
+  try {
+    const task = await Task.findById(req.params._id, { __v:0 });
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    updates.forEach(update => task[update] = req.body[update]);
+    await task.save();
+    res.json(task);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+})
+
+router.delete('/:_id', async (req, res) => {
+  try {
+    const task = await Task.findById(req.params._id, {  __v:0 });
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    await task.deleteOne();
+    res.json(task);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
