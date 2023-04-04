@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getTasks } from '../api';
 
 function TaskList() {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/tasks')
-      .then(res => {
-        setTasks(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    getTasks().then(data => setTasks(data));
   }, []);
 
   return (
